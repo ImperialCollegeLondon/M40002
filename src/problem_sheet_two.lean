@@ -127,6 +127,44 @@ include ha hn
 theorem part1 : (∃ s : ℝ, s ∈ S) ∧ (∃ B : ℝ, ∀ s ∈ S, s ≤ B ) :=
 sorry
 
+/-
+2) For `ε ∈ (0,1)` (and `0 ≤ x`) show `(x+ε)ⁿ ≤ x^n + ε[(x + 1)ⁿ − xⁿ].`
+(Hint: multiply out.)
+-/
+
+
+
+theorem part2 {x : ℝ} (hx : 0 ≤ x) {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1) : (x + ε)^n ≤ x^n + ε*((x+1)^n - x^n) :=
+begin
+  sorry
+end
+
+/-
+3) Hence show that if `0 ≤ x` and `xⁿ < a` then
+`∃ ε ∈ (0,1)` such that `(x+ε)ⁿ < a.` (*)
+-/
+
+theorem part3 {x : ℝ} (hx : 0 ≤ x) (h : x ^ n < a) : ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (x+ε)^n < a :=
+begin
+  sorry
+end
+
+/-
+4) If `0 < x` and `xⁿ > a`, deduce from (∗) that
+`∃ ε ∈ (0,1)` such that `(1/x+ε)ⁿ < 1/a`. (∗∗)
+-/
+
+
+
+theorem part4 {x : ℝ} (hx : 0 < x) (h : a < x^n) : ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (1/x + ε)^n < 1/a :=
+begin
+  sorry
+end
+
+/-
+5) Now let x be sup(S). Deduce contradictions from (∗) and (∗∗) to show that `xⁿ = a`.
+-/
+
 def x := Sup S
 
 -- the sup is the least upper bound
@@ -138,11 +176,6 @@ begin
   exact real.is_lub_Sup hx hy,
 end
 
-/-
-2) For `ε ∈ (0,1)` show `(x+ε)ⁿ ≤ x^n + ε[(x + 1)ⁿ − xⁿ].`
-(Hint: multiply out.)
--/
-
 -- I'm pretty sure this is needed
 lemma x_nonneg : 0 ≤ x :=
 begin
@@ -153,28 +186,6 @@ begin
   simp [hn],
 end
 
-theorem part2 (ε : ℝ) (hε0 : 0 < ε) (hε1 : ε < 1) : (x + ε)^n ≤ x^n + ε*((x+1)^n - x^n) :=
-begin
-  sorry
-end
-
-/-
-3) Hence show that if `xⁿ < a` then
-`∃ ε ∈ (0,1)` such that `(x+ε)ⁿ < a.` (*)
--/
-
-theorem part3 (h : x ^ n < a) : ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (x+ε)^n < a :=
-begin
-  sorry
-end
-
-/-
-4) If `xⁿ > a`, deduce from (∗) that
-`∃ ε ∈ (0,1)` such that `(1/x+ε)ⁿ < 1/a`. (∗∗)
--/
-
--- part 4 doesn't quite make sense because we didn't show x ≠ 0 yet
-
 lemma easy (h : a < x^n) : x ≠ 0 :=
 begin
   intro hx,
@@ -182,18 +193,10 @@ begin
   suffices : a < 0,
     linarith,
   convert h,
-  symmetry, -- ??
+  symmetry,
   simp [hn],
 end
 
-theorem part4 (h : a < x^n) : ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (1/x + ε)^n < 1/a :=
-begin
-  sorry
-end
-
-/-
-5) Deduce contradictions from (∗) and (∗∗) to show that `xⁿ = a`.
--/
 
 theorem part5 : x^n = a :=
 begin
