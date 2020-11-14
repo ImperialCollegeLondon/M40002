@@ -1,4 +1,6 @@
+import tactic
 import data.real.basic
+import data.nat.choose.sum -- binomial theorem
 
 /-!
 
@@ -99,11 +101,6 @@ end
 
 # Q4
 
-NOTE: I have not done this one myself -- some lemmas could be wrong!
-I just copied directly from the problem sheet and you know how
-sloppy mathematicians are...
-
-
 Fix `a ∈ (0,∞)` and `n : ℕ`. We will prove
 `∃ x : ℝ, x^n = a`. 
 
@@ -113,70 +110,82 @@ section Q4
 
 noncomputable theory
 
-parameters {a : ℝ} (ha : 0 < a) {n : ℕ} (hn : 0 < n)
+section one
+
+-- this first section, a and n are going to be variables
+variables {a : ℝ} (ha : 0 < a) {n : ℕ} (hn : 0 < n)
+
+include ha hn
+
+-- Note: We do part 1 after parts 2,3,4 because on the problem sheet
+-- parts 2,3,4 are written for the specific x=Sup(S) but
+-- part 4 for x needs part 3 for 1/x so you can't use part 3 to
+-- do part 4 the way it's been set up on the sheet. We prove
+-- 2,3,4 for arbitrary 0 ≤ x (or 0 < x for 4)
 
 /-
+2) For `ε ∈ (0,1)` and arbitrary `x ≥ 0` show `(x+ε)ⁿ ≤ x^n + ε[(x + 1)ⁿ − xⁿ].`
+(Hint: multiply out.)
+-/
+
+theorem part2 {x : ℝ} (x_nonneg : 0 ≤ x) (ε : ℝ) (hε0 : 0 < ε) (hε1 : ε < 1) :
+  (x + ε)^n ≤ x^n + ε * ((x + 1)^n - x^n) :=
+begin
+  sorry,
+end
+
+/-
+3) Hence show that if `x ≥ 0` and `xⁿ < a` then
+`∃ ε ∈ (0,1)` such that `(x+ε)ⁿ < a.` (*)
+-/
+
+theorem part3 {x : ℝ} (x_nonneg : 0 ≤ x) (h : x ^ n < a) :
+  ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (x+ε)^n < a :=
+begin
+  sorry
+end
+
+/-
+4) If `x > 0` is arbitrary and `xⁿ > a`, deduce from (∗) (i.e. part 3) that
+`∃ ε ∈ (0,1)` such that `(1/x+ε)ⁿ < 1/a`. (∗∗)
+-/
+
+theorem part4 {x : ℝ} (hx : 0 < x) (h : a < x^n) : ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (1/x + ε)^n < 1/a :=
+begin
+  sorry,
+end
+
+end one
+
+section two
+
+-- in this section, a and n are going to be fixed parameters
+
+parameters {a : ℝ} (ha : 0 < a) {n : ℕ} (hn : 0 < n)
+
+include ha hn
+/-
 1) Set `Sₐ := {s ∈ [0,∞) : s^n < a}` and show `Sₐ` is nonempty and
-bounded above, so we may define `x := sup Sₐ`.
+bounded above, so we may define `x := sup Sₐ` BUT WE WILL NOT DEFINE
+x TO BE THIS YET.
 -/
 
 def S := {s : ℝ | 0 ≤ s ∧ s ^ n < a}
 
-include ha hn
-
 theorem part1 : (∃ s : ℝ, s ∈ S) ∧ (∃ B : ℝ, ∀ s ∈ S, s ≤ B ) :=
-sorry
-
-/-
-2) For `ε ∈ (0,1)` (and `0 ≤ x`) show `(x+ε)ⁿ ≤ x^n + ε[(x + 1)ⁿ − xⁿ].`
-(Hint: multiply out.)
--/
-
-
-
-theorem part2 {x : ℝ} (hx : 0 ≤ x) {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1) : (x + ε)^n ≤ x^n + ε*((x+1)^n - x^n) :=
 begin
   sorry
 end
 
-/-
-3) Hence show that if `0 ≤ x` and `xⁿ < a` then
-`∃ ε ∈ (0,1)` such that `(x+ε)ⁿ < a.` (*)
--/
-
-theorem part3 {x : ℝ} (hx : 0 ≤ x) (h : x ^ n < a) : ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (x+ε)^n < a :=
-begin
-  sorry
-end
-
-/-
-4) If `0 < x` and `xⁿ > a`, deduce from (∗) that
-`∃ ε ∈ (0,1)` such that `(1/x+ε)ⁿ < 1/a`. (∗∗)
--/
-
-
-
-theorem part4 {x : ℝ} (hx : 0 < x) (h : a < x^n) : ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (1/x + ε)^n < 1/a :=
-begin
-  sorry
-end
-
-/-
-5) Now let x be sup(S). Deduce contradictions from (∗) and (∗∗) to show that `xⁿ = a`.
--/
 
 def x := Sup S
 
--- the sup is the least upper bound
+-- x is a least upper bound for X
 theorem is_lub_x : is_lub S x :=
 begin
-  cases part1 with nonempty bdd,
-  cases nonempty with x hx,
-  cases bdd with y hy,
-  exact real.is_lub_Sup hx hy,
+  sorry,
 end
 
--- I'm pretty sure this is needed
 lemma x_nonneg : 0 ≤ x :=
 begin
   rcases is_lub_x with ⟨h, -⟩,
@@ -197,10 +206,23 @@ begin
   simp [hn],
 end
 
+/-
+5) Deduce contradictions from (∗) (part 3) and (∗∗) (part 4) to show that `xⁿ = a`.
+-/
+
+-- lemma le_of_pow_le_pow (n : ℕ) (hn : 0 < n) (x y : ℝ) (h : x^n ≤ y^n) : x ≤ y :=
+-- begin
+--   by_contra hxy,
+--   push_neg at hxy,
+--   sorry,
+-- --  have h2 : pow_lt_pow
+-- end
 
 theorem part5 : x^n = a :=
 begin
-  sorry
+  sorry,
 end
+
+end two
 
 end Q4
