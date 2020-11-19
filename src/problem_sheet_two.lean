@@ -1,7 +1,66 @@
 import tactic
 import data.real.basic
 import data.nat.choose.sum -- binomial theorem
+import data.real.ereal
+import data.pnat.basic
 
+section Q2
+
+/-!
+
+# Q2
+
+-/
+
+/-
+2.  Fix nonempty sets S_n ⊆ R, n= 1,2,3,....  
+Prove that sup{sup S1,sup S2,sup S3,...} = sup(⋃_{n=1}^{infty} S_n),
+in the sense that if either exists then so does the other, and they are equal.
+-/
+
+/-
+Let's first answer a better question with fewer restrictions,
+using extended reals.
+Then Sup {Sup (S_i) : i ∈ I} = Sup (⋃_{i ∈ I} S_i) is *always* true
+-/
+
+-- this comes out really cleanly, we just allow infinity
+example (I : Type) (S : I → set (ereal)) :
+  Sup (set.range (λ i, Sup (S i))) = Sup (⋃ i, S i) :=
+begin
+  sorry
+end
+
+-- useful helper lemma
+lemma exists_lub (S : set ℝ) :
+  S.nonempty ∧ (upper_bounds S).nonempty → (∃ B, is_lub S B) :=
+begin
+  sorry
+end
+
+-- now the actual question
+
+-- "All the S_i have a sup and the set {sup S1, sup S2, ...} has a sup, if and 
+-- only if the union of the S_i has a sup"
+theorem Q2a (S : ℕ+ → set ℝ)
+  (hS : ∀ i : ℕ+, (S i).nonempty) :
+  (∀ n : ℕ+, ∃ B, is_lub (S n) B) ∧ (∃ B, is_lub (set.range (λ i, Sup (S i))) B) ↔ 
+  ∃ B, is_lub (⋃ i, S i) B :=
+begin
+  sorry
+end
+
+-- assuming both sides make sense, prove the sups are equal
+theorem Q2b (S : ℕ+ → set ℝ)
+  (hS : ∀ i : ℕ+, (S i).nonempty)
+  (hLHS: ∀ n : ℕ+, ∃ B, is_lub (S n) B) (hLHS' : ∃ B, is_lub (set.range (λ i, Sup (S i))) B)
+  (hRHS : ∃ B, is_lub (⋃ i, S i) B) :
+  Sup (set.range (λ i, Sup (S i))) = Sup (⋃ i, S i) :=
+begin
+  sorry
+end
+
+end Q2
 /-!
 
 # Q3 
@@ -43,57 +102,6 @@ begin
   sorry
 end
 
-/-!
-
-# Q6
-
--/
-
--- We introduce the usual mathematical notation for absolute value
-local notation `|` x `|` := abs x
-
-/-
-Useful for this one: `unfold`, `split_ifs` if you want to prove
-from first principles, or guessing the name of the library function
-if you want to use the library.
--/
-theorem Q6a (x y : ℝ) : | x + y | ≤ | x | + | y | :=
-begin
-  sorry
-end
-
--- all the rest you're supposed to do using Q6a somehow:
--- `simp` and `linarith` are useful.
-
-theorem Q6b (x y : ℝ) : |x + y| ≥ |x| - |y| :=
-begin
-  sorry
-end
-
-theorem Q6c (x y : ℝ) : |x + y| ≥ |y| - |x| :=
-begin
-  sorry
-end
-
-theorem Q6d (x y : ℝ) : |x - y| ≥ | |x| - |y| | :=
-begin
-  sorry,
-end
-
-theorem Q6e (x y : ℝ) : |x| ≤ |y| + |x - y| :=
-begin
-  sorry
-end
-
-theorem Q6f (x y : ℝ) : |x| ≥ |y| - |x - y| :=
-begin
-  sorry
-end
-
-theorem Q6g (x y z : ℝ) : |x - y| ≤ |x - z| + |y - z| :=
-begin
-  sorry
-end
 
 
 
@@ -226,3 +234,55 @@ end
 end two
 
 end Q4
+
+/-!
+
+# Q6
+
+-/
+
+-- We introduce the usual mathematical notation for absolute value
+local notation `|` x `|` := abs x
+
+/-
+Useful for this one: `unfold`, `split_ifs` if you want to prove
+from first principles, or guessing the name of the library function
+if you want to use the library.
+-/
+theorem Q6a (x y : ℝ) : | x + y | ≤ | x | + | y | :=
+begin
+  sorry
+end
+
+-- all the rest you're supposed to do using Q6a somehow:
+-- `simp` and `linarith` are useful.
+
+theorem Q6b (x y : ℝ) : |x + y| ≥ |x| - |y| :=
+begin
+  sorry
+end
+
+theorem Q6c (x y : ℝ) : |x + y| ≥ |y| - |x| :=
+begin
+  sorry
+end
+
+theorem Q6d (x y : ℝ) : |x - y| ≥ | |x| - |y| | :=
+begin
+  sorry,
+end
+
+theorem Q6e (x y : ℝ) : |x| ≤ |y| + |x - y| :=
+begin
+  sorry
+end
+
+theorem Q6f (x y : ℝ) : |x| ≥ |y| - |x - y| :=
+begin
+  sorry
+end
+
+theorem Q6g (x y z : ℝ) : |x - y| ≤ |x - z| + |y - z| :=
+begin
+  sorry
+end

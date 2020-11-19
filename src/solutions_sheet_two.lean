@@ -1,6 +1,10 @@
 import data.real.basic
 import data.nat.choose.sum -- binomial theorem
 import data.real.ereal
+import data.pnat.basic
+
+section Q2
+
 /-!
 
 # Q2
@@ -15,7 +19,8 @@ in the sense that if either exists then so does the other, and they are equal.
 
 /-
 Let's first answer a better question with fewer restrictions,
-using extended reals
+using extended reals.
+Then Sup {Sup (S_i) : i ∈ I} = Sup (⋃_{i ∈ I} S_i) is *always* true
 -/
 
 example (I : Type) (S : I → set (ereal)) :
@@ -29,10 +34,127 @@ begin
     exact set.subset_Union S i },
   { rw Sup_le_iff,
     rintros x ⟨-, ⟨i, rfl⟩, (hix : x ∈ S i)⟩,
-
-  }
+    apply le_trans (le_Sup hix),
+    apply le_Sup _,
+    use i }
 end
 
+lemma exists_lub (S : set ℝ) :
+  S.nonempty ∧ (upper_bounds S).nonempty → (∃ B, is_lub S B) :=
+begin
+  rintros ⟨h1, h2⟩,
+  cases real.exists_sup S h1 h2 with B hB,
+  use B,
+  split,
+  { apply (hB B).1,
+    refl },
+  { intros x hx,
+    rw hB,
+    exact hx }
+end
+
+-- "All the S_i have a sup and the set {sup S1, sup S2, ...} has a sup, if and 
+-- only if the union of the S_i has a sup"
+theorem Q2a (S : ℕ+ → set ℝ)
+  (hS : ∀ i : ℕ+, (S i).nonempty) :
+  (∀ n : ℕ+, ∃ B, is_lub (S n) B) ∧ (∃ B, is_lub (set.range (λ i, Sup (S i))) B) ↔ 
+  ∃ B, is_lub (⋃ i, S i) B :=
+begin
+  split,
+  { rintro ⟨h1, B, hB1, hB2⟩,
+    apply exists_lub,
+    cases hS 37 with x hx,
+    use [x, S 37, 37, hx],
+    use B,
+    rintros y ⟨-, ⟨i, rfl⟩, (hiY : y ∈ S i)⟩,
+    specialize hB1 ⟨i, rfl⟩,
+    refine le_trans _ hB1,
+    apply real.le_Sup _ _ hiY,
+    rcases h1 i with ⟨C, hC1, hC2⟩,
+    use C,
+    exact hC1 },
+  { rintro ⟨B, hB1, hB2⟩,
+    split,
+    { intro n,
+      apply exists_lub,
+      use hS n,
+      use B,
+      apply upper_bounds_mono_set _ hB1,
+      exact set.subset_Union S n },
+    { apply exists_lub,
+      split,
+      { apply set.range_nonempty },
+      { use B,
+        rintro - ⟨i, rfl⟩,
+        dsimp only,
+        rw real.Sup_le _ (hS i),
+        { intros z hz,
+          apply hB1,
+          use [S i, i, hz] },
+        { use B,
+          intros z hz,
+          apply hB1,
+          use [S i, i, hz] } } } }
+end
+
+-- assuming both sides make sense, prove the sups are equal
+theorem Q2b (S : ℕ+ → set ℝ)
+  (hS : ∀ i : ℕ+, (S i).nonempty)
+  (hLHS: ∀ n : ℕ+, ∃ B, is_lub (S n) B) (hLHS' : ∃ B, is_lub (set.range (λ i, Sup (S i))) B)
+  (hRHS : ∃ B, is_lub (⋃ i, S i) B) :
+  Sup (set.range (λ i, Sup (S i))) = Sup (⋃ i, S i) :=
+begin
+  -- suffices to prove LHS ≤ RHS and RHS ≤ LHS
+  apply le_antisymm,
+  { -- to prove Sup ≤ something, suffices to prove all elements are ≤ it
+    rw real.Sup_le,
+    rintro - ⟨j, rfl⟩,
+    dsimp only,
+    -- so it suffices to prove Sup (S j) ≤ Sup (⋃_i S i)
+    rw real.Sup_le,
+    -- so it even suffices to prove every element of S j is ≤ the Sup
+    intros x hx,
+    -- but this is clear because the elements are in the set
+    apply real.le_Sup, swap,
+    use [S j, j, hx],
+    -- now just check that all sets were nonempty and had least upper bounds,
+    -- this follows from our assumptions.
+    { rcases hRHS with ⟨B, hB1, hB2⟩,
+      use B,
+      exact hB1 },
+    { exact hS j},
+    { rcases hLHS j with ⟨B, hB1, hB2⟩,
+      use B,
+      exact hB1 },
+    { apply set.range_nonempty },
+    { rcases hLHS' with ⟨B, hB1, hB2⟩,
+      use B,
+      exact hB1 } },
+  { -- to prove Sup ≤ somthing, suffices to prove all elements are ≤ it
+    rw real.Sup_le,
+    -- so assume z is in one of the S i's, call it S j
+    rintro z ⟨-, ⟨j, rfl⟩, (hzj : z ∈ S j)⟩,
+    -- then z ≤ Sup (S j)
+    apply le_trans (real.le_Sup _ _ hzj),
+    -- so it's certainly ≤ Sup of a set containing Sup (S j)
+    apply real.le_Sup,
+    -- now tidy up
+    { rcases hLHS' with ⟨B, hB1, hB2⟩,
+      use B,
+      exact hB1 },
+    { use j },
+    { rcases hLHS j with ⟨B, hB1, hB2⟩,
+      use B,
+      exact hB1 },
+    { cases hS 37 with x hx,
+      use [x, S 37, 37, hx],
+    }, 
+    { rcases hRHS with ⟨B, hB1, hB2⟩,
+      use B,
+      exact hB1 } }
+end
+
+end Q2
 
 /-!
 
