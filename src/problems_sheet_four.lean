@@ -126,14 +126,17 @@ begin
   sorry
 end
 
+theorem limit_zero_mul_limit_zero {a b : ℕ+ → ℝ} (hal : is_limit a 0)
+  (hbm : is_limit b 0) : is_limit (λ n, a n * b n) 0 :=
+begin
+  sorry
+end
+
 theorem mul_limit {a b : ℕ+ → ℝ} {l m : ℝ} (hal : is_limit a l)
   (hb : is_limit b m) : is_limit (λ n, a n * b n) (l * m) :=
 begin
   sorry
 end
-
---an bn - l m = (an - l) * m + (bn - m) * an
---an bn - l m = (an - l) * m + (bn - m) * l + (an - l) * (bn - m)
 
 theorem inv_limit {a : ℕ+ → ℝ} {l : ℝ} (hl : l ≠ 0) (hal : is_limit a l) :
   is_limit (λ n, (a n)⁻¹) l⁻¹ :=
