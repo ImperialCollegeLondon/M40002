@@ -152,5 +152,34 @@ end
 
 end Q5
 
+section Q6
+
+/-
+6. Given functions f n : (0, 1) → R and f : (0, 1) → R, suppose we make the following
+Definition: f n converges to f (or f n → f ) if and only if ∀x ∈ (0, 1), f n (x) → f (x).
+
+Consider the examples fₙ(x) = n for x ≤ 1/n and 0 for x > 1/n. Do they converge
+to some function f : (0, 1) → ℝ ? Prove your answer. Compare with the sequence
+of real numbers aₙ := ∫₀¹ fₙ .
+-/
+
+open set
+
+def fn_is_limit (fn : ℕ+ → ℝ → ℝ) (f : ℝ → ℝ) :=
+  ∀ x : ℝ, x ∈ Ioo (0 : ℝ) 1 → is_limit (λ n, fn n x) (f x)
+
+-- fill in
+def flim : ℝ → ℝ := sorry
+
+noncomputable def fn (n : ℕ+) (x : ℝ) : ℝ := if x ≤ 1 / n then n else 0
+
+theorem Q6yes : fn_is_limit fn flim :=
+begin
+  sorry
+end
+
+-- can we do the integral?
+end Q6
+
 end sheet4
 
