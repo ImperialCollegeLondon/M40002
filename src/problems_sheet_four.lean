@@ -33,7 +33,13 @@ def Q1i (an : ℕ+ → ℝ) (a : ℝ) := is_limit an a
 def Q1ii (an : ℕ+ → ℝ) (a : ℝ) := ∃ N : ℕ+, ∀ n, N ≤ n → an n = a
 def Q1iii (an : ℕ+ → ℝ) := ∃ R : ℝ, ∀ n : ℕ+, |an n| < R
 
--- instructions: change thing on RHS of ↔ to `Q1ii an a` or `Q1iii an`
+-- useful intermediate thing
+theorem eq_zero_of_non_neg_of_lt_eps (x : ℝ) (hx : 0 ≤ x) (hε : ∀ ε > 0, x < ε) : x = 0 :=
+begin
+  sorry
+end
+
+-- Q1 instructions: change thing on RHS of ↔ to `Q1ii an a` or `Q1iii an`
 -- as appropriate, then prove
 theorem Q1a (an : ℕ+ → ℝ) (a : ℝ) :
   (∃ N : ℕ+, ∀ n, N ≤ n → ∀ ε, 0 < ε → |an n - a| < ε) ↔ Q1i an a :=
@@ -181,12 +187,27 @@ end
 
 noncomputable def a (n : ℕ+) : ℝ := ∫ x in 0..1, fn n x
 
-example : measure_theory.measure ℝ := by apply_instance
+noncomputable example : measure_theory.measure ℝ :=
+measure_theory.measure_space.volume
+
+#check @measure_theory.integrable_on
 
 theorem a_is_one (n : ℕ+) : a n = 1 :=
 begin
   unfold a,
-  have h1 : interval_integrable (fn n) _ (0 : ℝ)(1/n),
+  have h1 : interval_integrable (fn n) measure_theory.measure_space.volume
+    (0 : ℝ)(1/n),
+  { delta fn,
+    split,
+    { unfold measure_theory.integrable_on,
+      let f : ℝ → ℝ := λ x, n,
+
+      rw measure_theory.integrable_congr,
+--      convert measure_theory.integrable_on_const.2 _,
+      
+     },
+    { sorry }
+  }
 end
 
 
