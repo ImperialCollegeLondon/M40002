@@ -1,6 +1,7 @@
 import tactic
 import data.real.basic
 import data.pnat.basic
+import measure_theory.interval_integral
 
 local notation `|` x `|` := abs x
 
@@ -177,6 +178,18 @@ theorem Q6yes : fn_is_limit fn flim :=
 begin
   sorry
 end
+
+noncomputable def a (n : ℕ+) : ℝ := ∫ x in 0..1, fn n x
+
+example : measure_theory.measure ℝ := by apply_instance
+
+theorem a_is_one (n : ℕ+) : a n = 1 :=
+begin
+  unfold a,
+  have h1 : interval_integrable (fn n) _ (0 : ℝ)(1/n),
+end
+
+
 
 -- can we do the integral?
 end Q6
