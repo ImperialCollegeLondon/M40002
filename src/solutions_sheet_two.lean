@@ -3,6 +3,7 @@ import data.nat.choose.sum -- binomial theorem
 import data.real.ereal
 import data.pnat.basic
 
+-- namespace problem_sheet_two
 section Q2
 
 /-!
@@ -192,7 +193,7 @@ begin
 end
 
 
-theorem Q3 (S T : set ℝ) (a b : ℝ) :
+theorem problem_sheet_two.Q3 (S T : set ℝ) (a b : ℝ) :
   is_lub S a → is_lub T b → is_lub (S + T) (a + b) :=
 begin
   intros hSa hTb,
