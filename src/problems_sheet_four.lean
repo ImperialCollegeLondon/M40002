@@ -198,6 +198,7 @@ def flim : ℝ → ℝ := sorry
 
 noncomputable def fn (n : ℕ+) (x : ℝ) : ℝ := if x ≤ 1 / n then n else 0
 
+-- this is possible
 theorem Q6yes : fn_is_limit fn flim :=
 begin
   sorry
@@ -205,34 +206,16 @@ end
 
 noncomputable def a (n : ℕ+) : ℝ := ∫ x in 0..1, fn n x
 
-noncomputable example : measure_theory.measure ℝ :=
-measure_theory.measure_space.volume
-
-#check @measure_theory.integrable_on
-
+-- this is not
 theorem a_is_one (n : ℕ+) : a n = 1 :=
 begin
-  unfold a,
-  unfold fn,
-  apply measure_theory.simple_func,
-  have h1 : interval_integrable (fn n) measure_theory.measure_space.volume
-    (0 : ℝ)(1/n),
-  { delta fn,
-    split,
-    { unfold measure_theory.integrable_on,
-      let f : ℝ → ℝ := λ x, n,
-
-      rw measure_theory.integrable_congr,
---      convert measure_theory.integrable_on_const.2 _,
-      
-     },
-    { sorry }
-  }
+  -- this is basically impossible to do in Lean right now
+  -- because we only just got integrals. An expert could
+  -- do it no problem, but I'm not an expert!
+  -- The so-called "API" is not there.
+  sorry
 end
 
-
-
--- can we do the integral?
 end Q6
 
 end sheet4
