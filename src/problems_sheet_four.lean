@@ -29,15 +29,33 @@ namespace sheet4
 
 section Q1
 
-def Q1i (an : ℕ+ → ℝ) (a : ℝ) := is_limit an a
-def Q1ii (an : ℕ+ → ℝ) (a : ℝ) := ∃ N : ℕ+, ∀ n, N ≤ n → an n = a
-def Q1iii (an : ℕ+ → ℝ) := ∃ R : ℝ, ∀ n : ℕ+, |an n| < R
-
--- useful intermediate thing
+-- Before we start, here are some useful intermediate things
 theorem eq_zero_of_non_neg_of_lt_eps (x : ℝ) (hx : 0 ≤ x) (hε : ∀ ε > 0, x < ε) : x = 0 :=
 begin
   sorry
 end
+
+-- finite subsets of the naturals are bounded; proof by induction
+-- on the finite set.
+theorem set.nat_finite_bounded (S : set ℕ) (hS : S.finite) :
+  ∃ B : ℕ, ∀ n : ℕ, n ∈ S → n ≤ B :=
+begin
+  apply set.finite.induction_on hS; clear hS S,
+  { use 37,
+    rintro n ⟨⟩ },
+  { rintros a S - hS ⟨B, hB⟩,
+    use max B a,
+    rintros n (rfl | hnS),
+    { apply le_max_right },
+    { exact le_trans (hB n hnS) (le_max_left _ _)} },
+end
+
+
+def Q1i (an : ℕ+ → ℝ) (a : ℝ) := is_limit an a
+def Q1ii (an : ℕ+ → ℝ) (a : ℝ) := ∃ N : ℕ+, ∀ n, N ≤ n → an n = a
+def Q1iii (an : ℕ+ → ℝ) := ∃ R : ℝ, ∀ n : ℕ+, |an n| < R
+
+
 
 -- Q1 instructions: change thing on RHS of ↔ to `Q1ii an a` or `Q1iii an`
 -- as appropriate, then prove
@@ -195,6 +213,8 @@ measure_theory.measure_space.volume
 theorem a_is_one (n : ℕ+) : a n = 1 :=
 begin
   unfold a,
+  unfold fn,
+  apply measure_theory.simple_func,
   have h1 : interval_integrable (fn n) measure_theory.measure_space.volume
     (0 : ℝ)(1/n),
   { delta fn,
